@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import coaching.realdolmen.com.noteapplication.MainActivity;
@@ -35,7 +37,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         Note note = this.notes.get(position);
         holder.setNoteTitle(note.getTitle());
         holder.setNoteContent(note.getContent());
-        holder.setNoteCreationDate(note.getCreationDate().toString());
+        DateFormat dateFormat = new SimpleDateFormat("YYYY-mm-DD");
+        String date = dateFormat.format(note.getCreationDate());
+        holder.setNoteCreationDate(date);
     }
 
 

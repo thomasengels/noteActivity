@@ -1,6 +1,7 @@
 package coaching.realdolmen.com.noteapplication;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
+
+import coaching.realdolmen.com.noteapplication.data.Note;
+import coaching.realdolmen.com.noteapplication.data.NoteDbHelper;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
@@ -34,11 +38,21 @@ public class CreateNoteActivity extends AppCompatActivity {
                 String title = noteTitle.getText().toString();
                 String content = noteContent.getText().toString();
 
-                Toast toast = Toast.makeText(
+                /*Toast toast = Toast.makeText(
                         CreateNoteActivity.this,
                         String.format("Note created with title: %s - and content: %s", title, content),
                         Toast.LENGTH_SHORT);
-                toast.show();
+                toast.show();*/
+                Note note = new Note();
+                note.setContent(content);
+                note.setTitle(title);
+
+                long createdId = NoteDbHelper.getInstance(CreateNoteActivity.this).createNote(note);
+
+                Intent data = new Intent();
+                data.putExtra("noteId",createdId);
+                setResult(RESULT_OK,data);
+                finish();
             }
         });
         this.cancelBtn = findViewById(R.id.btnNoteCancel);

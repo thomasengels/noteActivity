@@ -55,15 +55,18 @@ public class NoteDbHelper extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-    public void createNote(Note note) {
+    public Long createNote(Note note) {
+        Long id = null;
         try (SQLiteDatabase db = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(KEY_TITLE, note.getTitle());
             values.put(KEY_CONTENT, note.getContent());
             values.put(KEY_CREATION_DATE, System.currentTimeMillis());
 
-            db.insert(TABLE, null, values);
+            id = db.insert(TABLE, null, values);
         }
+
+        return id;
     }
 
     public List<Note> getNotes() {
@@ -82,6 +85,23 @@ public class NoteDbHelper extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
             }
             return notes;
+        }
+    }
+
+    public Note getNoteById(long id){
+        Note note = null;
+        String query = "SELECT * FROM " + TABLE + " WHERE id = " + id;
+        try (SQLiteDatabase db = this.getWritableDatabase(); Cursor cursor = db.rawQuery(query, null)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    note = new Note();
+                    note.setId(Integer.parseInt(cursor.getString(0)));
+                    note.setTitle(cursor.getString(1));
+                    note.setContent(cursor.getString(2));
+                    note.setCreationDate(new Date(cursor.getLong(3)));
+                } while (cursor.moveToNext());
+            }
+            return note;
         }
     }
 }

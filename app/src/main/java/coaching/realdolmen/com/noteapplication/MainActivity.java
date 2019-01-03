@@ -14,9 +14,18 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+
+import coaching.realdolmen.com.noteapplication.adapters.NoteAdapter;
+import coaching.realdolmen.com.noteapplication.data.Note;
+import coaching.realdolmen.com.noteapplication.data.NoteDbHelper;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView noteItemsRecyclerView;
+    private NoteAdapter noteAdapter;
+    private final int REQUEST_CODE = 0;
+    private List<Note> notes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +39,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CreateNoteActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
         this.noteItemsRecyclerView = findViewById(R.id.recyclerViewNoteItems);
         this.noteItemsRecyclerView.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        this.noteItemsRecyclerView.setAdapter();
+
+        notes = NoteDbHelper.getInstance(this).getNotes();
+        this.noteAdapter = new NoteAdapter(notes);
+        this.noteItemsRecyclerView.setAdapter(this.noteAdapter);
     }
 
     @Override
@@ -60,5 +72,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            Long id = data.getLongExtra("noteId", 0);
+
+            Note createdNote = NoteDbHelper.getInstance(this).getNoteById(id);
+
+            this.notes.add(createdNote);
+            this.noteAdapter.notifyDataSetChanged();
+        }
     }
 }
