@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">NoteApplication</string>
+    <string name="action_settings">Settings</string>
+    <string name="inputNoteTitle">Title of note</string>
+    <string name="inputNoteContent">Content of note</string>
+    <string name="btnCancelText">Cancel</string>
+    <string name="btnConfirmText">Confirm</string>
+</resources>
